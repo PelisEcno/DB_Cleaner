@@ -940,15 +940,21 @@ puesto FROM EMPLEADO;
 
 /* RETO 1 - Retorna un listado con el código de oficina y 
 la ciudad donde hay oficinas */
-
+show tables;
 describe oficina;
 
-select o.codigo_oficina as cod_oficina, o.ciudad country,
+
+select codigo_oficina, ciudad from oficina;
+
+/* select o.codigo_oficina as cod_oficina, o.ciudad country,
 concat(o.codigo_oficina,' - ', o.ciudad) as cod_ciudad_oficina
- from oficina o;
+ from oficina o; */
  
  /* RETO 2 - Retorna un listado con la ciudad y 
  el telefono de las oficinas en España. */
+ 
+ show tables;
+ describe oficina;
  
  select ciudad, telefono, pais from oficina
  where upper(pais) = 'ESPAÑA';
@@ -957,41 +963,28 @@ concat(o.codigo_oficina,' - ', o.ciudad) as cod_ciudad_oficina
  de la ciudad de Madrid y cuyo representante de ventas tenga 
  el código de empleado 11 ó 30. */
  
+ show tables;
  describe cliente;
  describe empleado;
+ select * from empleado;
  
- select count(*) total_registros /*cl.ciudad, em.codigo_empleado */
- from cliente cl 
- join empleado em 
- on em.codigo_empleado = cl.codigo_empleado_rep_ventas
- where upper(cl.ciudad) = 'MADRID'
- and (em.codigo_empleado = 11 
- OR em.codigo_empleado = 30);
+ SELECT nombre_cliente, ciudad, codigo_empleado_rep_ventas FROM cliente where ciudad = 'Madrid'
+ AND codigo_empleado_rep_ventas IN(11, 30);
  
-  select count(*) total_registros /*cl.ciudad, em.codigo_empleado */
- from cliente cl 
- join empleado em 
- on em.codigo_empleado = cl.codigo_empleado_rep_ventas
- where upper(cl.ciudad) = 'MADRID'
- and em.codigo_empleado in (11,30); 
  
-select count(*) total_registros /*cl.ciudad, em.codigo_empleado */
- from cliente cl,  empleado em 
- where em.codigo_empleado = cl.codigo_empleado_rep_ventas
- and upper(cl.ciudad) = 'MADRID'
- and em.codigo_empleado in (11,30); 
  
- select em.codigo_empleado, count(*) total_registros /*cl.ciudad, em.codigo_empleado */
- from cliente cl,  empleado em 
- where em.codigo_empleado = cl.codigo_empleado_rep_ventas
- and upper(cl.ciudad) = 'MADRID'
- and em.codigo_empleado in (11,30)
- group by em.codigo_empleado; 
-
- select cl.ciudad, count(*) total_registros /*cl.ciudad, em.codigo_empleado */
- from cliente cl,  empleado em 
- where em.codigo_empleado = cl.codigo_empleado_rep_ventas
- and em.codigo_empleado in (11,30)
- group by cl.ciudad
- order by cl.ciudad desc; 
+ /* RETO D. Retorna el nombre del puesto, nombre, apellidos y email del jefe de la empresa. */
+ show tables;
+ describe empleado;
+ select nombre, apellido1, apellido2, puesto, email from empleado;
+ 
+ 
+ /* RETO C. Retorna un listado con el nombre, apellidos y puesto de aquellos empleados que no sean representantes de ventas. */
+ show tables;
+ describe empleado;
+ select * from cliente;
+ select nombre, apellido1, apellido2, puesto from empleado where puesto != 'Representente Ventas';
+ /* RETO D. Retorna el nombre del puesto, nombre, apellidos y email del jefe de la empresa.
+ 
+ /* RETO C. Retorna un listado con el nombre, apellidos y puesto de aquellos empleados que no sean representantes de ventas.
 
