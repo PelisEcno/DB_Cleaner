@@ -938,53 +938,141 @@ SELECT codigo_empleado, nombre, apellido1, apellido2,
 extension, email, codigo_oficina, codigo_jefe
 puesto FROM EMPLEADO;
 
-/* RETO 1 - Retorna un listado con el código de oficina y 
-la ciudad donde hay oficinas */
+/* A. Retorna un listado con el código de oficina y la ciudad donde hay oficinas. */
 show tables;
 describe oficina;
 
-
 select codigo_oficina, ciudad from oficina;
 
-/* select o.codigo_oficina as cod_oficina, o.ciudad country,
-concat(o.codigo_oficina,' - ', o.ciudad) as cod_ciudad_oficina
- from oficina o; */
- 
- /* RETO 2 - Retorna un listado con la ciudad y 
- el telefono de las oficinas en España. */
- 
- show tables;
- describe oficina;
- 
- select ciudad, telefono, pais from oficina
- where upper(pais) = 'ESPAÑA';
- 
- /* RETO 3 - Retorna el listado con todos los clientes que sean
- de la ciudad de Madrid y cuyo representante de ventas tenga 
- el código de empleado 11 ó 30. */
- 
- show tables;
- describe cliente;
- describe empleado;
- select * from empleado;
- 
- SELECT nombre_cliente, ciudad, codigo_empleado_rep_ventas FROM cliente where ciudad = 'Madrid'
- AND codigo_empleado_rep_ventas IN(11, 30);
- 
- 
- 
- /* RETO D. Retorna el nombre del puesto, nombre, apellidos y email del jefe de la empresa. */
- show tables;
- describe empleado;
- select nombre, apellido1, apellido2, puesto, email from empleado;
- 
- 
- /* RETO C. Retorna un listado con el nombre, apellidos y puesto de aquellos empleados que no sean representantes de ventas. */
- show tables;
- describe empleado;
- select * from cliente;
- select nombre, apellido1, apellido2, puesto from empleado where puesto != 'Representente Ventas';
- /* RETO D. Retorna el nombre del puesto, nombre, apellidos y email del jefe de la empresa.
- 
- /* RETO C. Retorna un listado con el nombre, apellidos y puesto de aquellos empleados que no sean representantes de ventas.
+/* B. Retorna un listado con la ciudad y el teléfono de las oficinas de España. */
+show tables;
+describe oficina;
 
+select ciudad, telefono from oficina
+where upper(pais) = 'ESPAÑA';
+
+/* C. Retorna un listado con el nombre, apellidos y email de los empleados cuyo jefe tiene un código de jefe igual a 7. */
+show tables;
+describe empleado;
+
+select nombre, apellido1, apellido2, email from empleado
+where codigo_jefe = 7;
+
+/* D. Retorna el nombre del puesto, nombre, apellidos y email del jefe de la empresa. */
+show tables;
+describe empleado;
+
+select puesto, nombre, apellido1, apellido2, email from empleado
+where codigo_jefe is null;
+
+/* C. Retorna un listado con el nombre, apellidos y puesto de aquellos empleados que no sean representantes de ventas. */
+show tables;
+describe empleado;
+
+select nombre, apellido1, apellido2, puesto from empleado
+where puesto != 'Representante Ventas';
+
+/* E. Retorna un listado con el nombre de todos los clientes españoles. */
+show tables;
+describe cliente;
+
+select nombre_cliente from cliente
+where upper(pais) = 'SPAIN';
+
+/* F. Retorna un listado con los distintos estados por los que puede pasar un pedido. */
+show tables;
+describe pedido;
+
+select distinct estado from pedido;
+
+/* G. Utilizando la función YEAR de MySQL. */
+show tables;
+describe pago;
+
+select distinct codigo_cliente from pago
+where YEAR(fecha_pago) = 2008;
+
+/* G. Utilizando la función DATE_FORMAT de MySQL. */
+show tables;
+describe pago;
+
+select distinct codigo_cliente from pago
+where DATE_FORMAT(fecha_pago, '%Y') = '2008';
+
+/* G. Sin utilizar ninguna de las funciones anteriores. */
+show tables;
+describe pago;
+
+select distinct codigo_cliente from pago
+where fecha_pago between '2008-01-01' and '2008-12-31';
+
+/* H. Genera un listado con el código de pedido, código de cliente, fecha esperada y fecha de entrega de los pedidos que no han sido entregados a tiempo. */
+show tables;
+describe pedido;
+
+select codigo_pedido, codigo_cliente, fecha_esperada, fecha_entrega from pedido
+where fecha_entrega > fecha_esperada;
+
+/* I. Utilizando la función ADDDATE de MySQL. */
+show tables;
+describe pedido;
+
+select codigo_pedido, codigo_cliente, fecha_esperada, fecha_entrega from pedido
+where fecha_entrega <= ADDDATE(fecha_esperada, -2);
+
+/* I. Utilizando la función DATEDIFF de MySQL. */
+show tables;
+describe pedido;
+
+select codigo_pedido, codigo_cliente, fecha_esperada, fecha_entrega from pedido
+where DATEDIFF(fecha_esperada, fecha_entrega) >= 2;
+
+/* I. Utilizando el operador resta -. Si es posible resolverlo con resta. */
+show tables;
+describe pedido;
+
+select codigo_pedido, codigo_cliente, fecha_esperada, fecha_entrega from pedido
+where (fecha_esperada - fecha_entrega) >= 2;
+
+/* J. Genera un listado de todos los pedidos que fueron rechazados en 2009. */
+show tables;
+describe pedido;
+
+select * from pedido
+where estado = 'Rechazado' and YEAR(fecha_pedido) = 2009;
+
+/* K. Genera un listado de todos los pedidos que han sido entregados en el mes de enero de cualquier año. */
+show tables;
+describe pedido;
+
+select * from pedido
+where estado = 'Entregado' and MONTH(fecha_entrega) = 1;
+
+/* L. Genera un listado con todos los pagos que se realizaron en el año 2008 mediante Paypal. Ordene el resultado de mayor a menor. */
+show tables;
+describe pago;
+
+select * from pago
+where YEAR(fecha_pago) = 2008 and forma_pago = 'PayPal'
+order by total desc;
+
+/* M. Genera un listado con todas las formas de pago que aparecen en la tabla pago sin repetidas. */
+show tables;
+describe pago;
+
+select distinct forma_pago from pago;
+
+/* N. Genera un listado con todos los productos que pertenecen a la gama Ornamentales y que tienen más de 100 unidades en stock ordenado por precio de venta descendente. */
+show tables;
+describe producto;
+
+select * from producto
+where gama = 'Ornamentales' and cantidad_en_stock > 100
+order by precio_venta desc;
+
+/* O. Genera un listado con todos los clientes que sean de la ciudad de Madrid y cuyo representante de ventas tenga el código de empleado 11 o 30. */
+show tables;
+describe cliente;
+
+select * from cliente
+where ciudad = 'Madrid' and codigo_empleado_rep_ventas in (11, 30);
